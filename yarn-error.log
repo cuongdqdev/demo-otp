@@ -1,0 +1,47 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add express boody-parser ejs
+
+PATH: 
+  C:\cmder\bin;C:\cmder\vendor\bin;C:\cmder\vendor\conemu-maximus5\ConEmu\Scripts;C:\cmder\vendor\conemu-maximus5;C:\cmder\vendor\conemu-maximus5\ConEmu;E:\Lab\Oracle12\product\12.2.0\dbhome_1\bin;C:\Users\dangq\Downloads\bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Python27\;C:\Python27\Scripts;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\xampp\php;C:\composer;C:\Python27;C:\Users\dangq\AppData\Local\Programs\Python\Python37-32\Scripts;C:\Program Files\PuTTY\;C:\Users\dangq\Documents\Tools\Mobile-Security-Framework-MobSF\DynamicAnalyzer\tools\adb\windows;C:\Users\dangq\AppData\Local\Programs\Python\Python37-32;C:\ProgramData\chocolatey\bin;C:\Program Files\nodejs\;C:\Program Files\MongoDB\Server\4.0\bin;C:\Program Files\Java\jdk1.8.0_221\bin;C:\cmder\bin;C:\Program Files (x86)\Microsoft SQL Server\150\DTS\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Microsoft SQL Server\130\DTS\Binn\;C:\Program Files (x86)\Yarn\bin\;C:\Users\dangq.MSI-CUONGDQ\AppData\Roaming\npm;C:\Users\dangq.MSI-CUONGDQ\AppData\Roaming\npm\node_modules\live-server;C:\Users\dangq.MSI-CUONGDQ\AppData\Local\Microsoft\WindowsApps;C:\Users\dangq.MSI-CUONGDQ\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\dangq.MSI-CUONGDQ\AppData\Local\Yarn\bin;C:\Users\dangq.MSI-CUONGDQ\AppData\Roaming\npm\node_modules\live-server;C:\Users\dangq.MSI-CUONGDQ\AppData\Roaming\npm;C:\Program Files\Git\cmd;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\cmder
+
+Yarn version: 
+  1.19.1
+
+Node version: 
+  10.16.3
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/boody-parser: Not found
+      at Request.params.callback [as _callback] (C:\Program Files (x86)\Yarn\lib\cli.js:66035:18)
+      at Request.self.callback (C:\Program Files (x86)\Yarn\lib\cli.js:140564:22)
+      at Request.emit (events.js:198:13)
+      at Request.<anonymous> (C:\Program Files (x86)\Yarn\lib\cli.js:141536:10)
+      at Request.emit (events.js:198:13)
+      at IncomingMessage.<anonymous> (C:\Program Files (x86)\Yarn\lib\cli.js:141458:12)
+      at Object.onceWrapper (events.js:286:20)
+      at IncomingMessage.emit (events.js:203:15)
+      at endReadableNT (_stream_readable.js:1145:12)
+      at process._tickCallback (internal/process/next_tick.js:63:19)
+
+npm manifest: 
+  {
+    "name": "5.OTP",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
