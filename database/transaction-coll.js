@@ -35,6 +35,12 @@ let transactionSchema = new Schema(
             require: true,
             default: 0
         },
+        OTP: {
+            type: Number,
+            trim: true,
+            require: true,
+            default: 000000
+        }
     },
     { timestamps: true }
 );

@@ -10,6 +10,11 @@ const app = express();
 // routing
 const transactionsRoute = require('./routes/transaction.route');
 const usersRoute = require('./routes/user.route');
+let authMiddleware = require('./middlewares/user.middleware');
+
+// api
+const apiUserRoute = require('./routes/api/user.route');
+const apiTransactionRoute = require('./routes/api/transaction.route');
 
 
 // template ejs
@@ -27,12 +32,17 @@ app.use(session({
     saveUninitialized: false,
 }));
 
-// definde routing
-app.use('/transactions', transactionsRoute);
+// define routing
+app.use('/transactions', authMiddleware.requireUserLogin, transactionsRoute);
 app.use('/users', usersRoute);
+app.use('/admin', authMiddleware.requireAdminLogin, usersRoute);
 
-app.get('/home', (req, res) => {
-    return res.json({ error: false, message: 'App is running!' });
+// define api routing
+app.use('/api', apiUserRoute);
+app.use('/api', authMiddleware.requireUserLogin, apiTransactionRoute);
+
+app.get('/', (req, res) => {
+    return res.render('index');
 })
 
 mongoose.connect(config.URL, {

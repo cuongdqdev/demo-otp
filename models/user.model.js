@@ -1,4 +1,6 @@
 const UserModel = require('../database/user-coll');
+const Client = require('authy-client').Client;
+const client = new Client({ key: 'zdia5L5nZU736Na79RUuB1JVbTd8yFdP' });
 
 class User extends UserModel {
     static register(username, password, email, fullname, phone) {

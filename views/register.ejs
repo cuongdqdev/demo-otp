@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Đăng ký</title>
+</head>
+
+<body>
+    <div class="contanier">
+        <h1 style="text-align: center; margin-top: 100px;">Đăng ký</h1>
+        <form style="margin-left: 560px; margin-top: 50px;">
+            <div class="form-group">
+                <label for="exampleInputUsername">Tài khoản</label>
+                <input style="width: 400px;" type="text" class="form-control" id="txtUsername"
+                    placeholder="Nhập vào tên đăng nhập" name="username">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword">Mật khẩu</label>
+                <input style="width: 400px;" type="password" class="form-control" id="txtPassword"
+                    placeholder="Nhập vào mật khẩu ****" name="password">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail">Email</label>
+                <input style="width: 400px;" type="text" class="form-control" id="txtEmail"
+                    placeholder="Nhập vào địa chỉ email" name="email">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputFullname">Họ và tên</label>
+                <input style="width: 400px;" type="text" class="form-control" id="txtFullname"
+                    placeholder="Nhập vào họ và tên" name="fullname">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPhone">Số điện thoại</label>
+                <input style="width: 400px;" type="text" class="form-control" id="txtPhone"
+                    placeholder="Nhập vào số điện thoại" name="phone">
+            </div>
+            <div class="form-group">
+                Bạn đã có tài khoản? <a href="/users/login">Đăng nhập ngay</a>
+            </div>
+            <button style="margin-left: 310px;" type="submit" class="btn btn-primary" id="btnRegister">Đăng ký</button>
+        </form>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const getData = () => {
+                let username = $('#txtUsername').val();
+                let password = $('#txtPassword').val();
+                let email = $('#txtEmail').val();
+                let fullname = $('#txtFullname').val();
+                let phone = $('#txtPhone').val();
+                return { username, password, email, fullname, phone };
+            }
+
+            const checkData = ({ username, password, email, fullname, phone }) => {
+                return (username == '' || password == '' || email == '' || fullname == '' || phone == '') ? false : true;
+            }
+
+            $('#btnRegister').click(function (e) {
+                e.preventDefault();
+                let data = getData();
+                let isData = checkData(data);
+                console.log(data, isData);
+                if (!isData) return alert('Vui lòng nhập thông tin đầy đủ');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/register',
+                    data: data,
+                    success: function (res) {
+                        console.log({ res })
+                        if (res.data.error)
+                            return alert('Đăng ký thất bại');
+
+                        window.location.href = '/users/login';
+                    },
+                    error: function (error) {
+                        alert('error');
+                    }
+                })
+            })
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Đăng nhập</title>
+</head>
+
+<body>
+    <div class="contanier">
+        <h1 style="text-align: center; margin-top: 100px;">Đăng nhập</h1>
+        <form style="margin-left: 560px; margin-top: 50px;">
+            <div class="form-group">
+                <label for="exampleInputUsernameOrEmail">Tài khoản</label>
+                <input style="width: 400px;" type="text" class="form-control" id="txtUsernameOrPhone"
+                    placeholder="Nhập vào tên đăng nhập hoặc số điện thoại" name="usernameOrPhone">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword">Mật khẩu</label>
+                <input style="width: 400px;" type="password" class="form-control" id="txtPassword"
+                    placeholder="Nhập vào mật khẩu ****" name="password">
+            </div>
+            <div class="form-group">
+                Bạn chưa có tài khoản? <a href="/users/register">Đăng kí ngay</a>
+            </div>
+            <button style="margin-left: 300px;" type="submit" class="btn btn-primary" id="btnLogin">Đăng nhập</button>
+        </form>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const getData = () => {
+                let usernameOrPhone = $('#txtUsernameOrPhone').val();
+                let password = $('#txtPassword').val();
+                return { usernameOrPhone, password };
+            }
+
+            const checkData = ({ usernameOrPhone, password }) => {
+                return (usernameOrPhone == '' || password == '') ? false : true;
+            }
+
+            $('#btnLogin').click(function (e) {
+                e.preventDefault();
+                let data = getData();
+                let isData = checkData(data);
+                console.log(data, isData);
+                if (!isData) return alert('Vui lòng nhập thông tin đầy đủ');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/login',
+                    data: data,
+                    success: function (res) {
+                        console.log({ res })
+                        if (res.data.error)
+                            return alert('Đăng nhập thất bại');
+
+                        window.location.href = '/transactions/transfer';
+                    },
+                    error: function (error) {
+                        alert('error');
+                    }
+                })
+            })
+        })
+    </script>
+</body>
+
+</html>

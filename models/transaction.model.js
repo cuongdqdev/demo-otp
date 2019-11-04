@@ -1,4 +1,5 @@
 const TransactionModel = require('../database/transaction-coll');
+const UserModel = require('../database/user-coll')
 
 class Transaction extends TransactionModel {
     static transfer(sender, reciever, amount, note) {
@@ -95,7 +96,7 @@ class Transaction extends TransactionModel {
                 //     });
 
                 // cập nhật trạng thái transaction thành công
-                let infoTransaction = await TransactionModel.findOneAndUpdate(_id, { status: 1 });
+                let infoTransaction = await TransactionModel.findOneAndUpdate(_id, { status: 1, OTP: otpNumber, new: true });
 
                 if (!infoTransaction) {
                     return resolve({ error: true, message: 'cannot_transfer' });
@@ -107,6 +108,27 @@ class Transaction extends TransactionModel {
                 return resolve({ error: true, message: error.message });
             }
         });
+    }
+
+    static historyTransaction(account) {
+        return new Promise(async resolve => {
+            try {
+
+                let infoSenderTransaction = await TransactionModel.find({ sender: account });
+
+                if (!infoSenderTransaction) return resolve({ error: true, message: 'cannot_find_sender_history_list' });
+
+                let infoReceiverTransaction = await TransactionModel.find({ reciever: account });
+
+                if (!infoReceiverTransaction) return resolve({ error: true, message: 'cannot_find_receiver_history_list' });
+
+                let infoHistoryTransaction = [...infoSenderTransaction, ...infoReceiverTransaction];
+
+                return resolve({ error: false, data: infoHistoryTransaction })
+            } catch (error) {
+                return resolve({ error: true, message: error.message })
+            }
+        })
     }
 }
 

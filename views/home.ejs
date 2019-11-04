@@ -1,12 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Home</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Giao dịch</title>
 </head>
+
 <body>
-    <h1>HOME</h1>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">OTP</a>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/users/logout">Đăng xuất <span class="sr-only">(current)</span></a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div class="contanier">
+        <div class="row" style="margin-top: 20px;">
+            <div class="col-7">
+                <h1 style="text-align: center; margin-bottom: 20px;">Lịch sử giao dịch</h1>
+                <div style="margin-left: 20px; margin-bottom: 10px;">
+                    <% if(infoUser) {%>
+                    <p>Chủ tài khoản: <strong><%=infoUser.data.fullname%></strong></p>
+                    <p>Số tài khoản: <strong><%=infoUser.data.account%></strong></p>
+                    <p>Số dư: <strong><%=infoUser.data.amount%></strong></p>
+                    <p>Trạng thái tài khoản: <%if(infoUser.data.status === 1) {%>
+                        <strong class="btn btn-success">Hoạt động</strong>
+                        <%} else {%>
+                        <strong class="btn btn-danger">Khóa</strong>
+                        <% } %>
+                    </p>
+                    <% } %>
+                </div>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#Tài khoản</th>
+                            <th scope="col">Số tiền</th>
+                            <th scope="col">Ghi chú</th>
+                            <th scope="col">Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(infoHistoryTransaction) {%>
+                            <% infoHistoryTransaction.data.forEach(transaction => {%>
+                        <tr>
+                            <th scope="row"><%=transaction.reciever%></th>
+                            <%if(transaction.sender == infoUser.data.account) { %>
+                                <td> - <%=transaction.amount%></td>
+                            <% } else {%>
+                                <td> + <%=transaction.amount%></td>
+                            <% } %>
+                            <td><%=transaction.note%></td>
+                            <% if(transaction.status == "1") {%>
+                                <td class="btn-success">Thành công</td>
+                            <% } else {%>
+                                <td class="btn-danger">Thất bại</td>
+                            <% } %>
+                        </tr>
+                            <%})%>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-5">
+                <h1 style="text-align: center; margin-bottom: 20px;">Thực hiện chuyển tiền</h1>
+                <form style="margin-left: 110px;">
+                    <div class="form-group">
+                        <label for="exampleInputAccount">Số tài khoản nhận tiền</label>
+                        <input style="width: 400px;" type="text" class="form-control" id="txtReceiverAccount"
+                            placeholder="Nhập vào số tài khoản cần chuyển" name="reciever" />
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleAmout">Số tiền</label>
+                        <input style="width: 400px;" type="number" class="form-control" id="txtAmount"
+                            placeholder="Nhập vào số tiền cần chuyển" name="amount" />
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlNote">Ghi chú</label>
+                        <textarea style="width: 400px;" class="form-control" id="txtNote" rows="3" name="note"
+                            placeholder="Nhập vào ghi chú"></textarea>
+                    </div>
+                    <button style="margin-left: 290px;" type=" submit" class="btn btn-primary" id="btnTransfer">Chuyển
+                        tiền</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const getData = () => {
+                let reciever = $('#txtReceiverAccount').val();
+                let amount = $('#txtAmount').val();
+                let note = $('#txtNote').val();
+                return { reciever, amount, note };
+            }
+
+            const checkData = ({ reciever, amount, note }) => {
+                return (reciever == '' || amount == '' || note == '') ? false : true;
+            }
+
+            $('#btnTransfer').click(function (e) {
+                e.preventDefault();
+                let data = getData();
+                let isData = checkData(data);
+                console.log(data, isData);
+                if (!isData) return alert('Vui lòng nhập thông tin đầy đủ');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/transfer',
+                    data: data,
+                    success: function (res) {
+                        console.log({ res })
+                        if (res.data.error)
+                            return alert('Chuyển tiền thất bại');
+
+                        window.location.href = '/transactions/verify';
+                    },
+                    error: function (error) {
+                        alert('error');
+                    }
+                })
+            })
+        })
+    </script>
 </body>
+
 </html>
