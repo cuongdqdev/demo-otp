@@ -1,5 +1,7 @@
 const TransactionModel = require('../database/transaction-coll');
 const UserModel = require('../database/user-coll')
+const Client = require('authy-client').Client;
+const client = new Client({ key: 'zdia5L5nZU736Na79RUuB1JVbTd8yFdP' });
 
 class Transaction extends TransactionModel {
     static transfer(sender, reciever, amount, note) {
@@ -36,10 +38,10 @@ class Transaction extends TransactionModel {
 
                 let infoTransactionAfterSaved = await infoTransaction.save();
 
-                let recieverAuthyID = infoReciever.authyID;
+                let senderAuthyID = infoSender.authyID;
 
 
-                // await client.requestSms({ authyId: recieverAuthyID })
+                // await client.requestSms({ authyId: senderAuthyID })
                 //     .then(function (response) {
                 //         console.log('Message sent successfully to', response.cellphone);
                 //     })
@@ -48,6 +50,7 @@ class Transaction extends TransactionModel {
                 //     });
 
                 return resolve({ error: false, data: infoTransactionAfterSaved });
+
             } catch (error) {
                 return resolve({ error: true, message: error.message });
             }
@@ -60,43 +63,64 @@ class Transaction extends TransactionModel {
                 if (!TRANSACTION) {
                     return resolve({ error: true, message: 'transaction_not_exist' });
                 }
+
+                let { sender, reciever, amount, _id } = TRANSACTION.data;
+
                 let { inValidOTP } = TRANSACTION.data;
                 let { account } = TRANSACTION.data
-                if (otpNumber !== '123456') {
+
+
+                let senderInfo = await UserModel.findOne({ account: sender });
+
+                console.log(senderInfo);
+
+                if (!senderInfo) {
+                    return resolve({ error: true, message: 'cannot_find_sender' })
+                }
+
+                flag = false;
+
+                let authyID = senderInfo.authyID;
+
+                console.log(authyID);
+
+                console.log(otpNumber);
+
+                 await client.verifyToken({ authyId: authyID, token: otpNumber })
+                    .then(function (response) {
+                        console.log('Token is valid');
+                        flag = true;
+                    })
+                    .catch(function (error) {
+                        throw error;
+                    });
+
+
+                if (!flag) {
                     TRANSACTION.data['inValidOTP'] = Number(inValidOTP) + 1;
                     if (TRANSACTION.data['inValidOTP'] === Number(5)) {
-                        let infoSender = await UserModel.findOneAndUpdate(account, { status: '0' });
+                        let infoSender = await UserModel.findOneAndUpdate(account, { status: '0' }, { new: true });
                         return resolve({ error: true, message: 'account_locked' })
                     }
                     return resolve({ error: true, data: 'invalid_otp' })
                 }
 
-                let { sender, reciever, amount, _id } = TRANSACTION.data;
-
                 // trừ tiền sender
-                let infoSender = await UserModel.findOneAndUpdate({ account: sender }, { $inc: { amount: Number(-amount) } });
+                let infoSender = await UserModel.findOneAndUpdate({ account: sender }, { $inc: { amount: Number(-amount) } }, { new: true });
 
                 if (!infoSender) {
                     return resolve({ error: true, message: 'cannot_find_sender' });
                 }
 
                 // cộng tiền reciever
-                let infoReciever = await UserModel.findOneAndUpdate({ account: reciever }, { $inc: { amount: Number(amount) } });
+                let infoReciever = await UserModel.findOneAndUpdate({ account: reciever }, { $inc: { amount: Number(amount) } }, { new: true });
 
                 if (!infoReciever) {
                     return resolve({ error: true, message: 'cannot_find_reciever' });
                 }
 
-                // await client.verifyToken({ authyId: 1635, token: '1234567' })
-                //     .then(function (response) {
-                //         console.log('Token is valid');
-                //     })
-                //     .catch(function (error) {
-                //         throw error;
-                //     });
-
                 // cập nhật trạng thái transaction thành công
-                let infoTransaction = await TransactionModel.findOneAndUpdate(_id, { status: 1, OTP: otpNumber, new: true });
+                let infoTransaction = await TransactionModel.findByIdAndUpdate(_id, { status: 1, OTP: otpNumber }, { new: true });
 
                 if (!infoTransaction) {
                     return resolve({ error: true, message: 'cannot_transfer' });

@@ -86,10 +86,9 @@
                     url: '/api/register',
                     data: data,
                     success: function (res) {
-                        console.log({ res })
                         if (res.data.error)
                             return alert('Đăng ký thất bại');
-
+                        alert('Đăng kí thành công');
                         window.location.href = '/users/login';
                     },
                     error: function (error) {

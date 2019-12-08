@@ -8,7 +8,6 @@ transactionRoute.route('/transfer')
         let infoUser = req.session.USER;
         let account = infoUser.data.account;
         let infoHistoryTransaction = await Transaction.historyTransaction(account);
-        console.log(infoHistoryTransaction);
         return res.render('home', { infoUser, infoHistoryTransaction });
     })
     .post(async (req, res) => {
@@ -28,8 +27,8 @@ transactionRoute.route('/verify')
         let { TRANSACTION } = req.session;
         const { otpNumber } = req.body;
         let infoTransaction = await Transaction.verifyTransaction(otpNumber, TRANSACTION);
-        if (infoTransaction.message === 'account_locked') delete req.session.TRANSACTION;
-        if (infoTransaction.data && infoTransaction.data.status === '1') delete req.session.TRANSACTION;
+        if (infoTransaction.message === 'account_locked') req.session.TRANSACTION=undefined;
+        if (infoTransaction.data || infoTransaction.data.status === 1) req.session.TRANSACTION=undefined;
         return res.render({ data: infoTransaction })
     })
 

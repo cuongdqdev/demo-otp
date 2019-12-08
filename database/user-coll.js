@@ -50,7 +50,7 @@ let userSchema = new Schema(
             type: String,
             trim: true,
             require: true,
-        }
+        },
     },
     { timestamps: true }
 );
